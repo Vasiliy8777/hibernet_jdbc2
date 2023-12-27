@@ -11,95 +11,97 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDaoJDBCImpl implements UserDao {
-    private static final String TAB_IS_EXIST = "Show tables";
-    private static final String CREATE_NEW_TAB = "CREATE TABLE users (id INT NOT NULL AUTO_INCREMENT,name VARCHAR(100) NOT NULL,lastName VARCHAR(100) NOT NULL, Age INT NOT NULL,PRIMARY KEY (`id`))";
-    private static final String DROP_TAB = "DROP TABLE users";
-    private static final String GET_ALL_USERS = "select * from users";
-    private static final String INSERT_NEW_USER = "INSERT INTO users (name, lastName, Age) VALUES(?,?,?)";
-    private static final String DELETE_USER = "DELETE FROM users where id=? ";
-    private static final String CLEAR_USERS = "TRUNCATE TABLE users";
-    private static Util connection = new Util();
+private static final String TAB_IS_EXIST = "Show tables";
+private static final String CREATE_NEW_TAB = "CREATE TABLE users (id INT NOT NULL AUTO_INCREMENT,name VARCHAR(100) NOT NULL,lastName VARCHAR(100) NOT NULL, Age INT NOT NULL,PRIMARY KEY (`id`))";
+private static final String DROP_TAB = "DROP TABLE users";
+private static final String GET_ALL_USERS = "select * from users";
+private static final String INSERT_NEW_USER = "INSERT INTO users (name, lastName, Age) VALUES(?,?,?)";
+private static final String DELETE_USER = "DELETE FROM users where id=? ";
+private static final String CLEAR_USERS = "TRUNCATE TABLE users";
+private static Util connection = new Util();
 
-    public UserDaoJDBCImpl() {
+public UserDaoJDBCImpl() {
 
-    }
+}
 
-    public void createUsersTable() {
-        try (PreparedStatement prepStat = connection.getConnect().prepareStatement(TAB_IS_EXIST)) {
-            prepStat.execute();
-            ResultSet res = prepStat.getResultSet();
-            if (res.next()) {
-                return;
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+public void createUsersTable() {
+    try (PreparedStatement prepStat = connection.getConnect().prepareStatement(TAB_IS_EXIST)) {
+        prepStat.execute();
+        ResultSet res = prepStat.getResultSet();
+        if (res.next()) {
+            return;
         }
-        try (PreparedStatement prepStat = connection.getConnect().prepareStatement(CREATE_NEW_TAB)) {
-            prepStat.execute();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    } catch (SQLException e) {
+        throw new RuntimeException(e);
     }
+    try (PreparedStatement prepStat = connection.getConnect().prepareStatement(CREATE_NEW_TAB)) {
+        prepStat.execute();
+    } catch (SQLException e) {
+        throw new RuntimeException(e);
+    }
+}
 
-    public void dropUsersTable() {
-        try (PreparedStatement prepStat = connection.getConnect().prepareStatement(TAB_IS_EXIST)) {
-            prepStat.execute();
-            ResultSet res = prepStat.getResultSet();
-            if (!res.next()) {
-                return;
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+public void dropUsersTable() {
+    try (PreparedStatement prepStat = connection.getConnect().prepareStatement(TAB_IS_EXIST)) {
+        prepStat.execute();
+        ResultSet res = prepStat.getResultSet();
+        if (!res.next()) {
+            return;
         }
-        try (PreparedStatement prepStat = connection.getConnect().prepareStatement(DROP_TAB)) {
-            prepStat.execute();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    } catch (SQLException e) {
+        throw new RuntimeException(e);
     }
+    try (PreparedStatement prepStat = connection.getConnect().prepareStatement(DROP_TAB)) {
+        prepStat.execute();
+    } catch (SQLException e) {
+        throw new RuntimeException(e);
+    }
+}
 
-    public void saveUser(String name, String lastName, byte age) {
-        try (PreparedStatement prepStat = connection.getConnect().prepareStatement(INSERT_NEW_USER)) {
-            prepStat.setString(1, name);
-            prepStat.setString(2, lastName);
-            prepStat.setInt(3, age);
-            prepStat.execute();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+public void saveUser(String name, String lastName, byte age) {
+    try (PreparedStatement prepStat = connection.getConnect().prepareStatement(INSERT_NEW_USER)) {
+        prepStat.setString(1, name);
+        prepStat.setString(2, lastName);
+        prepStat.setInt(3, age);
+        prepStat.execute();
+    } catch (SQLException e) {
+        throw new RuntimeException(e);
     }
+}
 
-    public void removeUserById(long id) {
-        try (PreparedStatement prepStat = connection.getConnect().prepareStatement(DELETE_USER)) {
-            prepStat.setInt(1, (int) id);
-            prepStat.execute();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+public void removeUserById(long id) {
+    try (PreparedStatement prepStat = connection.getConnect().prepareStatement(DELETE_USER)) {
+        prepStat.setInt(1, (int) id);
+        prepStat.execute();
+    } catch (SQLException e) {
+        throw new RuntimeException(e);
     }
-    public List<User> getAllUsers() {
-        List<User> users = new ArrayList<>();
-        try (PreparedStatement prepStat = connection.getConnect().prepareStatement(GET_ALL_USERS)) {
-            prepStat.execute();
-            ResultSet resultSet = prepStat.getResultSet();
-            while (resultSet.next()) {
-                User user = new User();
-                user.setId((long) resultSet.getInt(1));
-                user.setName(resultSet.getString(2));
-                user.setLastName(resultSet.getString(3));
-                user.setAge((byte) resultSet.getInt(4));
-                users.add(user);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+}
+
+public List<User> getAllUsers() {
+    List<User> users = new ArrayList<>();
+    try (PreparedStatement prepStat = connection.getConnect().prepareStatement(GET_ALL_USERS)) {
+        prepStat.execute();
+        ResultSet resultSet = prepStat.getResultSet();
+        while (resultSet.next()) {
+            User user = new User();
+            user.setId((long) resultSet.getInt(1));
+            user.setName(resultSet.getString(2));
+            user.setLastName(resultSet.getString(3));
+            user.setAge((byte) resultSet.getInt(4));
+            users.add(user);
         }
-        return users;
+    } catch (SQLException e) {
+        throw new RuntimeException(e);
     }
-    public void cleanUsersTable() {
-        try (PreparedStatement prepStat = connection.getConnect().prepareStatement(CLEAR_USERS)) {
-            prepStat.execute();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    return users;
+}
+
+public void cleanUsersTable() {
+    try (PreparedStatement prepStat = connection.getConnect().prepareStatement(CLEAR_USERS)) {
+        prepStat.execute();
+    } catch (SQLException e) {
+        throw new RuntimeException(e);
     }
+}
 }

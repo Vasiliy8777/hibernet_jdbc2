@@ -13,6 +13,9 @@ import java.sql.*;
 public class Main {
 public static void main(String[] args) {
     UserService userServ = new UserServiceImpl();
+    userServ.dropUsersTable();
+    userServ.createUsersTable();
+    userServ.dropUsersTable();
     userServ.createUsersTable();
     userServ.saveUser("Tom", "Doe", (byte) 23);
     userServ.saveUser("Mot", "Fot", (byte) 53);
